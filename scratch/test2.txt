@@ -1,0 +1,1 @@
+DICT: {'id': '🥺', 'txt': ':pleading_face:', 'url': 'https://fonts.gstatic.com/s/e/notoemoji/15.1/1f97a/72.png'}

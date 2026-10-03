@@ -1,0 +1,5 @@
+pytest
+obsws-python
+pytchat
+pydantic
+python-dotenv
