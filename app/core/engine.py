@@ -43,6 +43,11 @@ class Engine:
         # If in a game, process game-specific commands with time window if applicable
         if self.manager.state != "MAIN_MENU" and self.manager.active_game:
             current_time = time.time()
+            
+            # Reset timer if we just transitioned into a game
+            if not hasattr(self, 'last_state') or self.last_state == "MAIN_MENU":
+                self.last_action_time = current_time
+                
             if self.manager.state in ["SOKOBAN", "TETRIS"]:
                 # Use 1-second action window rule
                 if current_time - self.last_action_time >= self.action_window:
@@ -107,6 +112,7 @@ class Engine:
                 self.manager._end_game()
                 self.last_action_time = current_time
                 
+        self.last_state = self.manager.state
         # Output frame
         frame = self.manager.get_current_frame()
         text = render_to_string(frame)

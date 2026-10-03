@@ -7,7 +7,12 @@ from .models import ChatMessage
 
 class YouTubeChatClient:
     def __init__(self, video_id: str):
-        self.video_id = video_id
+        if "youtube.com/watch?v=" in video_id:
+            self.video_id = video_id.split("v=")[1].split("&")[0]
+        elif "youtu.be/" in video_id:
+            self.video_id = video_id.split("youtu.be/")[1].split("?")[0]
+        else:
+            self.video_id = video_id
         self.chat = None
         self.running = False
 
