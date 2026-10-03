@@ -26,12 +26,12 @@ class GameManager:
                 bar = "█" * filled + "·" * (10 - filled)
                 vote_str = f"QUIT:[{bar}] {votes}/{req}"
                 if frame:
-                    bottom_row = len(frame) - 1
-                    width = len(frame[bottom_row])
+                    top_row = 0
+                    width = len(frame[top_row])
                     offset = max(0, width - len(vote_str) - 1)
                     for i, c in enumerate(vote_str):
                         if offset + i < width:
-                            frame[bottom_row][offset + i] = c
+                            frame[top_row][offset + i] = c
             return frame
         return [["E", "R", "R", "O", "R"]]
 

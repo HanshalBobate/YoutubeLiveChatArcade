@@ -103,7 +103,7 @@ class Engine:
                 else:
                     pass
                     
-            if not self.manager.active_game.is_finished() and current_time - self.last_action_time >= 30.0:
+            if not self.manager.active_game.is_finished() and current_time - self.last_action_time >= 120.0:
                 self.manager._end_game()
                 self.last_action_time = current_time
                 
