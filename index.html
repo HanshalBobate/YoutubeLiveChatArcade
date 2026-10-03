@@ -1,335 +1,615 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Chat Arcade - How to Play</title>
-    <meta name="description" content="Learn how to play the YouTube Chat Arcade, a shared gaming experience entirely controlled by YouTube Live Chat!">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="description"
+        content="Learn how to play the YouTube Chat Arcade, a shared gaming experience entirely controlled by YouTube Live Chat!">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Fira+Code:wght@400;600&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0f111a;
-            --bg-glow: #1a1525;
-            --accent-primary: #ff2a5f;
-            --accent-secondary: #00f0ff;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --paper: #eceee9;
+            --ink: #17181a;
+            --mute: #5b5f63;
+            --rule: #c9ccc5;
+            --live: #d9291f;
+            --ok: #0d6e5f;
+            --cmd: #fff;
+            --sans: 'Bricolage Grotesque', system-ui, sans-serif;
+            --mono: 'Fira Code', ui-monospace, monospace;
         }
 
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            position: relative;
+            font-family: var(--sans);
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.55;
+            font-size: 1.05rem
         }
 
-        /* Animated Background Blobs */
-        .blob {
-            position: absolute;
-            filter: blur(100px);
-            z-index: -1;
-            opacity: 0.5;
-            animation: float 15s infinite alternate ease-in-out;
-        }
-        .blob-1 {
-            top: -10%;
-            left: -10%;
-            width: 50vw;
-            height: 50vw;
-            background: radial-gradient(circle, rgba(255,42,95,0.3) 0%, transparent 70%);
-            animation-delay: 0s;
-        }
-        .blob-2 {
-            bottom: -10%;
-            right: -10%;
-            width: 60vw;
-            height: 60vw;
-            background: radial-gradient(circle, rgba(0,240,255,0.2) 0%, transparent 70%);
-            animation-delay: -5s;
+        a {
+            color: inherit
         }
 
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(5%, 5%) scale(1.1); }
-            100% { transform: translate(-5%, -5%) scale(0.95); }
+        :focus-visible {
+            outline: 3px solid var(--live);
+            outline-offset: 2px
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-            position: relative;
-            z-index: 1;
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+            min-height: 100vh
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 4rem;
-            animation: fade-in-up 1s ease-out;
+        /* left: title + live console */
+        .rail {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2.5rem 2rem 1.5rem;
+            border-right: 2px solid var(--ink)
         }
 
         h1 {
-            font-size: clamp(3rem, 8vw, 4.5rem);
             font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 40px rgba(255, 42, 95, 0.3);
+            font-size: clamp(3rem, 5.2vw, 4.6rem);
+            line-height: .92;
+            letter-spacing: -.03em
         }
 
-        .subtitle {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            font-weight: 300;
+        .tag {
+            margin-top: 1rem;
+            color: var(--mute);
+            max-width: 26ch
         }
 
-        .glass-panel {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-            animation: fade-in-up 1s ease-out backwards;
+        .live {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            font-family: var(--mono);
+            font-size: .8rem;
+            margin-bottom: 1.2rem
         }
 
-        .glass-panel:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.15);
+        .live i {
+            width: .7rem;
+            height: .7rem;
+            background: var(--live);
+            display: inline-block
         }
 
-        /* Stagger animations */
-        .glass-panel:nth-child(2) { animation-delay: 0.2s; }
-        .glass-panel:nth-child(3) { animation-delay: 0.4s; }
-        .glass-panel:nth-child(4) { animation-delay: 0.6s; }
+        .console {
+            border: 2px solid var(--ink);
+            background: var(--cmd);
+            font-family: var(--mono);
+            font-size: .82rem
+        }
 
-        @keyframes fade-in-up {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
+        .console header {
+            display: flex;
+            justify-content: space-between;
+            padding: .45rem .7rem;
+            border-bottom: 2px solid var(--ink);
+            background: var(--ink);
+            color: var(--paper)
+        }
+
+        .meter {
+            height: 6px;
+            background: var(--rule)
+        }
+
+        .meter b {
+            display: block;
+            height: 100%;
+            width: 100%;
+            background: var(--live);
+            transform-origin: left
+        }
+
+        .log {
+            list-style: none;
+            height: 11.5rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: .5rem .7rem
+        }
+
+        .log li {
+            margin: 0;
+            padding: .12rem 0;
+            display: flex;
+            gap: .5rem
+        }
+
+        .log li::before {
+            content: none
+        }
+
+        .log .who {
+            color: var(--mute);
+            flex: none
+        }
+
+        .log .ok {
+            color: var(--ok);
+            font-weight: 600
+        }
+
+        .log .no {
+            color: var(--mute);
+            text-decoration: line-through
+        }
+
+        .log .sys {
+            color: var(--mute);
+            font-style: italic
+        }
+
+        .hint {
+            font-size: .78rem;
+            color: var(--mute);
+            padding: .4rem .7rem;
+            border-top: 1px solid var(--rule)
+        }
+
+        /* right: the manual */
+        main {
+            padding: 2.5rem clamp(1.5rem, 5vw, 4.5rem) 3rem;
+            max-width: 56rem
+        }
+
+        section {
+            padding: 2.5rem 0;
+            border-top: 2px solid var(--ink)
+        }
+
+        section:first-child {
+            border-top: 0;
+            padding-top: 0
         }
 
         h2 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            font-weight: 800;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            letter-spacing: -.02em;
+            line-height: 1.05;
+            margin-bottom: 1rem
         }
 
-        h2::before {
-            content: '';
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--accent-secondary);
-            box-shadow: 0 0 10px var(--accent-secondary);
+        h3 {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -.01em;
+            line-height: 1.1;
+            margin-bottom: .6rem
         }
 
         p {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-        }
-
-        .highlight {
-            color: var(--accent-secondary);
-            font-weight: 600;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .game-card {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid var(--glass-border);
-        }
-
-        .game-card h3 {
-            color: #fff;
-            font-size: 1.5rem;
             margin-bottom: 1rem;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 0.5rem;
+            max-width: 62ch
         }
 
-        code {
-            font-family: 'Fira Code', monospace;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 0.2rem 0.5rem;
-            border-radius: 6px;
-            color: var(--accent-secondary);
-            font-size: 0.95em;
-            border: 1px solid rgba(0, 240, 255, 0.2);
+        strong {
+            font-weight: 600
         }
 
-        ul {
+        /* commands are real buttons: tap to "type" them in chat */
+        .cmd {
+            font: 600 .92rem var(--mono);
+            background: var(--cmd);
+            color: var(--ink);
+            border: 1.5px solid var(--ink);
+            padding: .12rem .45rem;
+            cursor: pointer;
+            border-radius: 0;
+            box-shadow: 2px 2px 0 var(--ink);
+            transition: transform .08s, box-shadow .08s
+        }
+
+        .cmd:hover {
+            background: var(--ink);
+            color: var(--paper)
+        }
+
+        .cmd:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 var(--ink)
+        }
+
+        code.s {
+            font: 600 1rem var(--mono)
+        }
+
+        .golden {
+            border-left: 8px solid var(--live);
+            padding: .2rem 0 .2rem 1.2rem;
+            margin: 1.5rem 0
+        }
+
+        .golden b {
+            font-weight: 800;
+            font-size: 1.25rem;
+            display: block;
+            margin-bottom: .3rem
+        }
+
+        /* game entries read like a command index */
+        .game {
+            display: grid;
+            grid-template-columns: 9rem 1fr;
+            gap: 0 2rem;
+            padding: 1.6rem 0;
+            border-top: 1px solid var(--rule)
+        }
+
+        .game:first-of-type {
+            border-top: 0;
+            padding-top: .5rem
+        }
+
+        .game>h3 {
+            grid-column: 1
+        }
+
+        .game>div {
+            grid-column: 2
+        }
+
+        .cmds {
             list-style: none;
+            margin: .2rem 0 0
         }
 
-        ul li {
-            margin-bottom: 0.8rem;
-            padding-left: 1.5rem;
-            position: relative;
+        .cmds li {
+            display: grid;
+            grid-template-columns: minmax(10rem, auto) 1fr;
+            gap: 1rem;
+            align-items: baseline;
+            padding: .45rem 0;
+            border-top: 1px dotted var(--rule)
         }
 
-        ul li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--accent-primary);
+        .cmds li span.d {
+            color: var(--mute);
+            font-size: .95rem
         }
 
-        .action-window {
-            background: linear-gradient(90deg, rgba(255,42,95,0.1) 0%, rgba(0,240,255,0.1) 100%);
-            border-left: 4px solid var(--accent-primary);
-            padding: 1.5rem;
-            border-radius: 0 12px 12px 0;
-            margin-top: 1.5rem;
+        .alts {
+            display: flex;
+            gap: .5rem;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .alts em {
+            font-style: normal;
+            color: var(--mute);
+            font-size: .85rem
+        }
+
+        .sok {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.2rem 0
+        }
+
+        .sok h4 {
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-bottom: .5rem
+        }
+
+        .sym {
+            list-style: none
+        }
+
+        .sym li {
+            display: grid;
+            grid-template-columns: 2rem 1fr;
+            padding: .25rem 0;
+            border-top: 1px dotted var(--rule)
+        }
+
+        .sym .g {
+            font: 600 1.3rem/1.2 var(--mono)
+        }
+
+        .rules {
+            padding-left: 1.1rem
+        }
+
+        .rules li {
+            margin-bottom: .5rem
         }
 
         footer {
-            text-align: center;
-            margin-top: 4rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--ink);
+            color: var(--mute);
+            font-size: .9rem
         }
 
-        @media (max-width: 600px) {
-            .container { padding: 2rem 1rem; }
-            .glass-panel { padding: 1.5rem; }
-            h1 { font-size: 2.5rem; }
+        @media (max-width:900px) {
+            .layout {
+                display: block
+            }
+
+            .rail {
+                position: static;
+                height: auto;
+                border-right: 0;
+                border-bottom: 2px solid var(--ink);
+                padding: 1.5rem 1.2rem
+            }
+
+            .console {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 5;
+                border-width: 2px 0 0
+            }
+
+            .log {
+                height: 5.2rem
+            }
+
+            .hint {
+                display: none
+            }
+
+            main {
+                padding: 1.5rem 1.2rem 8rem
+            }
+
+            .game {
+                display: block
+            }
+
+            .cmds li {
+                grid-template-columns: 1fr
+            }
+
+            .sok {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @media (prefers-reduced-motion:reduce) {
+            * {
+                transition: none !important;
+                animation: none !important
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
+    <div class="layout">
 
-    <div class="container">
-        <header>
-            <h1>YouTube Chat Arcade</h1>
-            <p class="subtitle">The stream where the chat plays the game.</p>
-        </header>
-
-        <section class="glass-panel">
-            <h2>What is it?</h2>
-            <p>Welcome to the <strong>YouTube Chat Arcade</strong>! This stream is entirely controlled by you and the rest of the chat. There is no host—just the audience working together (or against each other) to beat classic games directly on the live stream.</p>
-            <p>You interact by typing specific commands starting with an exclamation mark <code>!</code> directly into the YouTube live chat.</p>
-        </section>
-
-        <section class="glass-panel">
-            <h2>How It Works</h2>
-            <p>To prevent absolute chaos, the arcade engine processes commands using a <span class="highlight">1-Second Action Window</span>.</p>
-            
-            <div class="action-window">
-                <p style="margin-bottom: 0.5rem; color: #fff; font-weight: 600;">The Golden Rule:</p>
-                <p style="margin-bottom: 0;">During a game of Tetris or Sokoban, the engine waits 1 second between moves. <strong>The VERY FIRST valid command typed in chat during that window is the one that gets executed.</strong> If you're too slow, your command is ignored until the next window!</p>
+        <aside class="rail">
+            <div>
+                <p class="live"><i aria-hidden="true"></i>LIVE CHAT = CONTROLLER</p>
+                <h1>YouTube Chat Arcade</h1>
+                <p class="tag">The stream where the chat plays the game.</p>
             </div>
-            
-            <p style="margin-top: 1.5rem;">To start playing or switch games, anyone can type a global game command. If you want to stop a game, type <code>!game quit</code> (requires half the chat to agree via voting).</p>
-        </section>
 
-        <section class="glass-panel">
-            <h2>The Games & Commands</h2>
-            <div class="grid">
-                
-                <div class="game-card">
-                    <h3>🎮 Main Menu</h3>
-                    <p>When the arcade is idle, type these to launch a game:</p>
-                    <ul>
-                        <li><code>!game ttt</code> (Tic-Tac-Toe)</li>
-                        <li><code>!game tetris</code> (Tetris)</li>
-                        <li><code>!game sokoban</code> (Sokoban)</li>
-                    </ul>
+            <div class="console" role="region" aria-label="Practice chat">
+                <header><span>practice chat</span><span id="tick">window 1</span></header>
+                <div class="meter" aria-hidden="true"><b id="bar"></b></div>
+                <ul class="log" id="log" aria-live="polite">
+                    <li class="sys">Tap any command on the page to send it.</li>
+                </ul>
+                <p class="hint">Send two quickly. Only the first in each 1-second window counts.</p>
+            </div>
+        </aside>
+
+        <main>
+            <section>
+                <h2>What is it?</h2>
+                <p>Welcome to the <strong>YouTube Chat Arcade</strong>! This stream is entirely controlled by you and
+                    the rest of the chat. There is no host—just the audience working together (or against each other) to
+                    beat classic games directly on the live stream.</p>
+                <p>You interact by typing specific commands starting with an exclamation mark <code class="s">!</code>
+                    directly into the YouTube live chat.</p>
+            </section>
+
+            <section>
+                <h2>How It Works</h2>
+                <p>To prevent absolute chaos, the arcade engine processes commands using a <strong>1-Second Action
+                        Window</strong>.</p>
+                <div class="golden">
+                    <b>The Golden Rule:</b>
+                    During a game of Tetris or Sokoban, the engine waits 1 second between moves. <strong>The VERY FIRST
+                        valid command typed in chat during that window is the one that gets executed.</strong> If you're
+                    too slow, your command is ignored until the next window!
                 </div>
+                <p>To start playing or switch games, anyone can type a global game command. If you want to stop a game,
+                    type <button class="cmd" data-cmd="!game quit">!game quit</button> (requires half the chat to agree
+                    via voting).</p>
+            </section>
 
-                <div class="game-card">
-                    <h3>❌ Tic-Tac-Toe</h3>
-                    <p>A classic 1v1 game. Join the queue and fight for victory! The UI clearly shows who is playing X and O. When someone wins, the game pauses for 3 seconds so the victor can bask in glory before returning to the main menu and declaring the winner in the global chat!</p>
-                    <ul>
-                        <li><code>!ttt join</code> (Join game)</li>
-                        <li><code>!ttt top left</code> (Play top left)</li>
-                        <li><code>!ttt center</code> (Play center)</li>
-                        <li><code>!ttt bottom right</code></li>
-                    </ul>
-                </div>
+            <section>
+                <h2>The Games &amp; Commands</h2>
 
-                <div class="game-card">
-                    <h3>🧱 Tetris</h3>
-                    <p>Survive as long as you can on a wider 14x15 board! The right-side panel tracks exactly which user made the last successful move. Plus, a strict gravity timer forces the piece down every 10 seconds unconditionally, so the game never stalls!</p>
-                    <ul>
-                        <li><code>!left</code> or <code>!l</code></li>
-                        <li><code>!right</code> or <code>!r</code></li>
-                        <li><code>!rotate</code> or <code>!up</code></li>
-                        <li><code>!drop</code> or <code>!down</code></li>
-                    </ul>
-                </div>
-
-                <div class="game-card" style="grid-column: 1 / -1;">
-                    <h3>📦 Sokoban (Detailed Guide)</h3>
-                    <p>Sokoban is a classic puzzle game where you play as a warehouse worker pushing crates to designated storage locations. The Arcade generates procedurally infinite, clean maps (only 2% obstacle density and exactly 1-3 crates), making puzzles perfectly manageable. It features a minimalist UI that displays the latest player's username!</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
-                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
-                            <h4 style="color: var(--accent-secondary); margin-bottom: 0.5rem;">The Symbols</h4>
-                            <ul style="font-size: 0.95rem;">
-                                <li><code>☻</code> <strong>You (The Player)</strong></li>
-                                <li><code>□</code> <strong>Crate (To be pushed)</strong></li>
-                                <li><code>·</code> <strong>Goal (Storage spot)</strong></li>
-                                <li><code>█</code> <strong>Wall (Impassable)</strong></li>
-                                <li><code>▣</code> <strong>Crate safely on a Goal!</strong></li>
-                            </ul>
-                        </div>
-                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
-                            <h4 style="color: var(--accent-secondary); margin-bottom: 0.5rem;">The Rules</h4>
-                            <ul style="font-size: 0.95rem;">
-                                <li>You can only push <strong>one crate</strong> at a time.</li>
-                                <li>You <strong>cannot pull</strong> crates.</li>
-                                <li>If you push a crate into a corner, it's stuck forever!</li>
-                                <li>Work with chat to avoid soft-locking the puzzle!</li>
-                            </ul>
-                        </div>
+                <article class="game">
+                    <h3>Main Menu</h3>
+                    <div>
+                        <p>When the arcade is idle, type these to launch a game:</p>
+                        <ul class="cmds">
+                            <li><span><button class="cmd" data-cmd="!game ttt">!game ttt</button></span><span
+                                    class="d">Tic-Tac-Toe</span></li>
+                            <li><span><button class="cmd" data-cmd="!game tetris">!game tetris</button></span><span
+                                    class="d">Tetris</span></li>
+                            <li><span><button class="cmd" data-cmd="!game sokoban">!game sokoban</button></span><span
+                                    class="d">Sokoban</span></li>
+                        </ul>
                     </div>
+                </article>
 
-                    <p><strong>Commands:</strong></p>
-                    <ul style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
-                        <li style="margin-bottom: 0;"><code>!up</code> or <code>!u</code></li>
-                        <li style="margin-bottom: 0;"><code>!down</code> or <code>!d</code></li>
-                        <li style="margin-bottom: 0;"><code>!left</code> or <code>!l</code></li>
-                        <li style="margin-bottom: 0;"><code>!right</code> or <code>!r</code></li>
-                        <li style="margin-bottom: 0;"><code>!reset</code> (Restarts if you get stuck)</li>
-                    </ul>
-                </div>
+                <article class="game">
+                    <h3>Tic-Tac-Toe</h3>
+                    <div>
+                        <p>A classic 1v1 game. Join the queue and fight for victory! The UI clearly shows who is playing
+                            X and O. When someone wins, the game pauses for 3 seconds so the victor can bask in glory
+                            before returning to the main menu and declaring the winner in the global chat!</p>
+                        <ul class="cmds">
+                            <li><span><button class="cmd" data-cmd="!ttt join">!ttt join</button></span><span
+                                    class="d">Join game</span></li>
+                            <li><span><button class="cmd" data-cmd="!ttt top left">!ttt top left</button></span><span
+                                    class="d">Play top left</span></li>
+                            <li><span><button class="cmd" data-cmd="!ttt center">!ttt center</button></span><span
+                                    class="d">Play center</span></li>
+                            <li><span><button class="cmd" data-cmd="!ttt bottom right">!ttt bottom
+                                        right</button></span><span class="d"></span></li>
+                        </ul>
+                    </div>
+                </article>
 
-            </div>
-        </section>
+                <article class="game">
+                    <h3>Tetris</h3>
+                    <div>
+                        <p>Survive as long as you can on a wider 14x15 board! The right-side panel tracks exactly which
+                            user made the last successful move. Plus, a strict gravity timer forces the piece down every
+                            10 seconds unconditionally, so the game never stalls!</p>
+                        <ul class="cmds">
+                            <li class="alts"><span class="alts"><button class="cmd"
+                                        data-cmd="!left">!left</button><em>or</em><button class="cmd"
+                                        data-cmd="!l">!l</button></span><span class="d"></span></li>
+                            <li class="alts"><span class="alts"><button class="cmd"
+                                        data-cmd="!right">!right</button><em>or</em><button class="cmd"
+                                        data-cmd="!r">!r</button></span><span class="d"></span></li>
+                            <li class="alts"><span class="alts"><button class="cmd"
+                                        data-cmd="!rotate">!rotate</button><em>or</em><button class="cmd"
+                                        data-cmd="!up">!up</button></span><span class="d"></span></li>
+                            <li class="alts"><span class="alts"><button class="cmd"
+                                        data-cmd="!drop">!drop</button><em>or</em><button class="cmd"
+                                        data-cmd="!down">!down</button></span><span class="d"></span></li>
+                        </ul>
+                    </div>
+                </article>
 
-        <footer>
-            <p>Made for the YouTube Chat Arcade Project. Type a command in chat to begin!</p>
-        </footer>
+                <article class="game">
+                    <h3>Sokoban</h3>
+                    <div>
+                        <p>Sokoban is a classic puzzle game where you play as a warehouse worker pushing crates to
+                            designated storage locations. The Arcade generates procedurally infinite, clean maps (only
+                            2% obstacle density and exactly 1-3 crates), making puzzles perfectly manageable. It
+                            features a minimalist UI that displays the latest player's username!</p>
+
+                        <div class="sok">
+                            <div>
+                                <h4>The Symbols</h4>
+                                <ul class="sym">
+                                    <li><span class="g">☻</span><span><strong>You (The Player)</strong></span></li>
+                                    <li><span class="g">□</span><span><strong>Crate (To be pushed)</strong></span></li>
+                                    <li><span class="g">·</span><span><strong>Goal (Storage spot)</strong></span></li>
+                                    <li><span class="g">█</span><span><strong>Wall (Impassable)</strong></span></li>
+                                    <li><span class="g">▣</span><span><strong>Crate safely on a Goal!</strong></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>The Rules</h4>
+                                <ul class="rules">
+                                    <li>You can only push <strong>one crate</strong> at a time.</li>
+                                    <li>You <strong>cannot pull</strong> crates.</li>
+                                    <li>If you push a crate into a corner, it's stuck forever!</li>
+                                    <li>Work with chat to avoid soft-locking the puzzle!</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <p><strong>Commands:</strong></p>
+                        <ul class="cmds">
+                            <li class="alts"><span class="alts"><button class="cmd"
+                                        data-cmd="!up">!up</button><em>or</em><button class="cmd"
+                                        data-cmd="!u">!u</button></span><span class="d"></span></li>
+                            <li class="alts"><span class="alts"><button class="cmd"
+                                        data-cmd="!down">!down</button><em>or</em><button class="cmd"
+                                        data-cmd="!d">!d</button></span><span class="d"></span></li>
+                            <li class="alts"><span class="alts"><button class="cmd"
+                                        data-cmd="!left">!left</button><em>or</em><button class="cmd"
+                                        data-cmd="!l">!l</button></span><span class="d"></span></li>
+                            <li class="alts"><span class="alts"><button class="cmd"
+                                        data-cmd="!right">!right</button><em>or</em><button class="cmd"
+                                        data-cmd="!r">!r</button></span><span class="d"></span></li>
+                            <li><span><button class="cmd" data-cmd="!reset">!reset</button></span><span
+                                    class="d">Restarts if you get stuck</span></li>
+                        </ul>
+                    </div>
+                </article>
+            </section>
+
+            <footer>Made for the YouTube Chat Arcade Project. Type a command in chat to begin!</footer>
+        </main>
     </div>
+
+    <script>
+        (function () {
+            var log = document.getElementById('log'), bar = document.getElementById('bar'), tick = document.getElementById('tick');
+            var names = ['you', 'pixelfox', 'mara_k', 'n0va', 'tt_rex', 'lumen'], windowNo = 1, taken = false, MAX = 40;
+            var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            function add(cls, who, text) {
+                var li = document.createElement('li'); li.className = cls;
+                if (who) { var w = document.createElement('span'); w.className = 'who'; w.textContent = who + ':'; li.appendChild(w); }
+                var t = document.createElement('span'); t.textContent = text; li.appendChild(t);
+                log.appendChild(li);
+                while (log.children.length > MAX) log.removeChild(log.firstChild);
+            }
+            function send(cmd, who) {
+                if (!taken) { taken = true; add('ok', who, cmd + '  executed'); }
+                else add('no', who, cmd + '  ignored');
+            }
+            // 1-second action window, as the engine does it
+            function startWindow() {
+                taken = false; tick.textContent = 'window ' + windowNo;
+                if (!reduce) {
+                    bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)';
+                    void bar.offsetWidth;
+                    bar.style.transition = 'transform 1s linear'; bar.style.transform = 'scaleX(0)';
+                }
+            }
+            startWindow();
+            setInterval(function () { windowNo++; startWindow(); }, 1000);
+
+            document.querySelectorAll('.cmd').forEach(function (b) {
+                b.addEventListener('click', function () {
+                    var first = log.querySelector('.sys'); if (first) first.remove();
+                    send(b.dataset.cmd, 'you');
+                    // a stray chatter sometimes races you, to show the rule
+                    if (Math.random() < .35) {
+                        setTimeout(function () { send(b.dataset.cmd.indexOf('!game') === 0 ? '!game tetris' : '!left', names[1 + Math.floor(Math.random() * 5)]); }, 120 + Math.random() * 500);
+                    }
+                });
+            });
+        })();
+    </script>
 </body>
+
 </html>

@@ -20,7 +20,11 @@ class GameManager:
         elif self.active_game:
             frame = self.active_game.render()
             if self.quit_votes:
-                vote_str = f"QUIT VOTE: {len(self.quit_votes)}/{self._get_required_quit_votes()}"
+                req = self._get_required_quit_votes()
+                votes = min(len(self.quit_votes), req)
+                filled = int((votes / req) * 10) if req > 0 else 0
+                bar = "█" * filled + "·" * (10 - filled)
+                vote_str = f"QUIT:[{bar}] {votes}/{req}"
                 if frame:
                     bottom_row = len(frame) - 1
                     width = len(frame[bottom_row])
@@ -96,19 +100,20 @@ class GameManager:
             if cmd.startswith("!game "):
                 if self.state == "MAIN_MENU":
                     game_name = cmd.split(" ")[1]
-                    self._start_game(game_name)
+                    self._start_game(game_name, msg)
                 continue
                 
         # We process game commands through a separate logic flow to enforce 5-second action window for Sokoban/Tetris
         # Wait, the prompt says for Sokoban: 
         # "At the beginning of a turn/window: ... Find the earliest message that begins with ! ... Execute the first valid command. Reset timer."
 
-    def _start_game(self, game_name: str):
+    def _start_game(self, game_name: str, msg):
         if game_name == "sokoban":
             self.active_game = Sokoban()
             self.state = "SOKOBAN"
         elif game_name == "ttt":
             self.active_game = TicTacToeGame()
+            self.active_game.handle_command("!ttt join", msg.user_id, msg.username)
             self.state = "TTT"
         elif game_name == "tetris":
             self.active_game = TetrisGame()

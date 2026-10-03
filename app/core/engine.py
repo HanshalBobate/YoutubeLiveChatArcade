@@ -63,7 +63,9 @@ class Engine:
                 from app.games.base import CommandResult
                 for msg in messages:
                     if msg.text.startswith("!"):
-                        self.manager.active_game.handle_command(msg.text, msg.user_id, msg.username)
+                        result = self.manager.active_game.handle_command(msg.text, msg.user_id, msg.username)
+                        if result == CommandResult.EXECUTED:
+                            self.last_action_time = current_time
                         
             # Update game
             self.manager.active_game.update()
@@ -100,6 +102,10 @@ class Engine:
                     self.last_action_time = current_time
                 else:
                     pass
+                    
+            if not self.manager.active_game.is_finished() and current_time - self.last_action_time >= 30.0:
+                self.manager._end_game()
+                self.last_action_time = current_time
                 
         # Output frame
         frame = self.manager.get_current_frame()
